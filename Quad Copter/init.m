@@ -36,18 +36,20 @@ f5_b = (kd*cm/m)*(cos(phi)*sin(psi)*sin(theta)-cos(psi)*sin(theta))*(v21+v22+v23
 f6_a = -(kd/m)*vz -g;
 f6_b = (kd*cm/m)*(cos(theta)*cos(phi))*(v21+v22+v23+v24);
 f7 = wx + wy*(sin(phi)*tan(theta)) + wz*(cos(phi)*tan(theta));
-f8 = wy*cos(theta) + - wz*sin(phi);
+f8 = wy*cos(phi) - wz*sin(phi);
 f9 = sin(phi)/cos(theta)*wy + cos(phi)/cos(theta)*wz;
-f10 = (L*k*cm/Ixx)*(v21- v23) - ((Iyy- Izz)/Ixx)*wy*wz;
-f11 = (L*k*cm/Iyy)*(v22- v24) - ((Izz- Ixx)/Iyy)*wx*wz;
-f12 = (L*k*cm/Izz)*(v21- v21+ v24 - v24) - ((Ixx - Iyy)/Izz)*wx*wy;
-
+f10_a =  -((Iyy- Izz)/Ixx)*wy*wz;
+f10_b = (L*k*cm/Ixx)*(v21- v23);
+f11_a = -((Izz- Ixx)/Iyy)*wx*wz;
+f11_b = (L*k*cm/Iyy)*(v22- v24);
+f12_a =  -((Ixx - Iyy)/Izz)*wx*wy;
+f12_b = (L*k*cm/Izz)*(v21- v21+ v24 - v24);
 
 %% jacobiaan om de a matrix te maken
 J_a = jacobian([f1 f2 f3 f4_a f5_a f6_a f7 f8 f9 f10 f11 f12],[vx vy vz theta phi psi x y z wx wy wz]);
 
 %% jacobiaan om de B matrix te maken
-J_b = jacobian([0 0 0 f4_b f5_b f6_b 0 0 0 0 0 0],[v21 v22 v23 v24]);
+J_b = jacobian([0 0 0 f4_b f5_b f6_b 0 0 0 f10_b f11_b f12_b],[v21 v22 v23 v24]);
 
 %% De equilibrium waardes in de Jacobiaan steken
 %maar omdat er geen wx wy wz equib waardes zijn is het nog steeds
@@ -57,3 +59,5 @@ Js_a = subs(J_a, [x y z theta psi phi], [0 0 0 0 0 0]);
 Js_b = subs(J_b, [x y z theta psi phi], [0 0 0 0 0 0]); 
 %B = double(Js_b);
 
+
+System = ss(Js_a,Js_b);
