@@ -42,7 +42,7 @@ f5_b = (kd*cm/m)*(cos(phi)*sin(psi)*sin(theta)-cos(psi)*sin(theta))*(v21+v22+v23
 %f5 = f5_a + f5_b;
 
 f6_a = -(kd/m)*vz - g;
-f6_b = (kd*cm/m)*(cos(theta)*cos(phi))*(v21+v22+v23+v24);
+f6_b = (k*cm/m)*(cos(theta)*cos(phi))*(v21+v22+v23+v24);
 
 %f6 = f6_a + f6_b;
 
@@ -60,7 +60,7 @@ f11_b = (L*k*cm/Iyy)*(v22- v24);
 %f11 = f11_a + f11_b;
 
 f12_a =  -((Ixx - Iyy)/Izz)*wx*wy;
-f12_b = (L*k*cm/Izz)*(v21- v21+ v24 - v24);
+f12_b = (b*cm/Izz)*(v21- v22+ v23 - v24);
 
 %f12 = f12_a + f12_b;
 
@@ -68,7 +68,7 @@ f12_b = (L*k*cm/Izz)*(v21- v21+ v24 - v24);
 
 
 %% jacobiaan om de a matrix te maken
-J_a = jacobian([f1 f2 f3 f4_a f5_a f6_a f7 f8 f9 f10_a f11_a f12_a],[vx vy vz theta phi psi x y z wx wy wz]);
+J_a = jacobian([f1 f2 f3 f4_a f5_a f6_a f7 f8 f9 f10_a f11_a f12_a],[ x y z vx vy vz phi theta psi wx wy wz]);
 
 %% jacobiaan om de B matrix te maken
 J_b = jacobian([0 0 0 f4_b f5_b f6_b 0 0 0 f10_b f11_b f12_b],[v21 v22 v23 v24]);
