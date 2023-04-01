@@ -1,11 +1,16 @@
-syms vx vy vz theta psi phi wx wy wz v21 v22 v23 v24 x y z;
+%% Syms initialization
 
+% states
+syms x y z vx vy vz phi theta psi wx wy wz ;
 
-%% Voor puur in symbolen
+% inputs
+syms v21 v22 v23 v24
+
+% parameters
 syms m L k b g kd Ixx Iyy Izz cm;
 
 
-%% voor een uitgewerkte versie
+%% for values
 
 % m = 0.5;
 % L = 0.25;
@@ -20,7 +25,7 @@ syms m L k b g kd Ixx Iyy Izz cm;
 
 
 
-%% equi point values
+%% Equilibrium point at y* = 0
 psi_0 = 0;
 phi_0 = 0;
 theta_0 = 0;
