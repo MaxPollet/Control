@@ -76,7 +76,7 @@ f12 = f12_a + f12_b;
 J_a = jacobian([f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12],[ x y z vx vy vz phi theta psi wx wy wz]);
 
 %% jacobiaan om de B matrix te maken
-J_b = jacobian([f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12],[v21 v22 v23 v24]);
+J_b = jacobian([0 0 0 f4_b f5_b f6_b 0 0 0 f10_b f11_b f12_b],[v21 v22 v23 v24]);
 
 %% De equilibrium waardes in de Jacobiaan steken
 %maar omdat er geen wx wy wz equib waardes zijn is het nog steeds
@@ -93,9 +93,8 @@ Js_b = subs(J_b, [x y z theta psi phi, wx, wy, wz], [0 0 0 0 0 0 0 0 0]);
 
 A = double(subs(Js_a, [m L k b g kd Ixx Iyy Izz cm ], [0.5 0.25 3*10^(-6) 10^(-7) 9.81 0.25 5*10^(-3) 5*10^(-3) 10^(-2) 10^(4) ])); 
 B = double(subs(Js_b, [m L k b g kd Ixx Iyy Izz cm], [0.5 0.25 3*10^(-6) 10^(-7) 9.81 0.25 5*10^(-3) 5*10^(-3) 10^(-2) 10^(4)])); 
-C1 = [eye(3), zeros(3), zeros(3), zeros(3); zeros(3), zeros(3), eye(3), zeros(3)];
-C = eye(12);
-D = zeros(12,4);
+C = [eye(3), zeros(3), zeros(3), zeros(3); zeros(3), zeros(3), eye(3), zeros(3)];
+D = zeros(6,4);
 
 
 
@@ -107,31 +106,22 @@ System = ss(A,B,C,D);
 Ts = 0.05;
 Zero_hold = c2d(System,Ts);
 pole(Zero_hold)
-rank(ctrb(Zero_hold))
-rank(obsv(Zero_hold))
-
 
 Tustin = c2d(System,Ts, 'tustin');
 pole(Tustin)
-rank(ctrb(Tustin))
-rank(obsv(Tustin))
+
 
 euler = c2d(System,Ts, 'forward');
 pole(euler)
-rank(ctrb(euler))
-rank(obsv(euler))
 
 
-[a,b,c,d] = ssdata(Tustin); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %control
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-Q = eye(12);
-Q(1,1) = 10;
-Q(2,2) = 10;
-Q(3,3) = 1000000;
-R = eye(4);
+Q = eye(2)
 
-[K,S,P] = lqr(Tustin,Q,R);
+
+
+[K,S,P] = lqr(System,Q,R)
