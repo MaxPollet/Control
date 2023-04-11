@@ -26,12 +26,29 @@ syms m L k b g kd Ixx Iyy Izz cm;
 
 
 %% Equilibrium point at y* = 0
-psi_0 = 0;
-phi_0 = 0;
-theta_0 = 0;
+% It is known through filling in xdot = 0 at y* = 0 that the equilibrium
+% point is the following: 
+%   x* = zeros(12,1)
+%   u* = g*m/(4k*cm)*ones(4,1)
+
 x_0 = 0;
 y_0 = 0;
 z_0 = 0;
+vx_0 = 0;
+vy_0 = 0;
+vz_0 = 0;
+psi_0 = 0;
+phi_0 = 0;
+theta_0 = 0;
+wx_0 = 0;
+wy_0 = 0;
+wz_0 = 0;
+
+v21_0 = g*m/(4*k*cm);
+v22_0 = g*m/(4*k*cm);
+v23_0 = g*m/(4*k*cm);
+v24_0 = g*m/(4*k*cm);
+%% Nonlinear state equations of the system
 
 f1 = vx;
 f2 = vy;
@@ -69,30 +86,30 @@ f12_b = (b*cm/Izz)*(v21- v22+ v23 - v24);
 
 f12 = f12_a + f12_b;
 
+%% Linearization of the state space equations
 
+% matrix A
+J_a = jacobian([f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12],[x y z vx vy vz phi theta psi wx wy wz]);
 
-
-%% jacobiaan om de a matrix te maken
-J_a = jacobian([f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12],[ x y z vx vy vz phi theta psi wx wy wz]);
-
-%% jacobiaan om de B matrix te maken
+% matrix B
 J_b = jacobian([f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12],[v21 v22 v23 v24]);
 
-%% De equilibrium waardes in de Jacobiaan steken
-%maar omdat er geen wx wy wz equib waardes zijn is het nog steeds
-%nonlineair???
-Js_a = subs(J_a, [x y z theta psi phi, wx, wy, wz, v21, v22, v23, v24], [0 0 0 0 0 0 0 0 0 40.875 40.875 40.875 40.875]); 
-%A = double(Js_a);
-Js_b = subs(J_b, [x y z theta psi phi, wx, wy, wz], [0 0 0 0 0 0 0 0 0]);
-%B = double(Js_b);
+%% Evaluating the jacobian in x* and u*
+
+Js_a = subs(J_a, [x y z vx vy vz phi theta psi wx wy wz v21 v22 v23 v24], ...
+    [x_0 y_0 z_0 vx_0 vy_0 vz_0 phi_0 theta_0 psi_0 wx_0 wy_0 wz_0 v21_0 v22_0 v23_0 v24_0]); 
+
+Js_b = subs(J_b, [x y z vx vy vz theta psi phi wx wy wz v21 v22 v23 v24], ...
+    [x_0 y_0 z_0 vx_0 vy_0 vz_0 phi_0 theta_0 psi_0 wx_0 wy_0 wz_0 v21_0 v22_0 v23_0 v24_0]);
 
 
 
+% Filling in the parameters
 
-
-
-A = double(subs(Js_a, [m L k b g kd Ixx Iyy Izz cm ], [0.5 0.25 3*10^(-6) 10^(-7) 9.81 0.25 5*10^(-3) 5*10^(-3) 10^(-2) 10^(4) ])); 
-B = double(subs(Js_b, [m L k b g kd Ixx Iyy Izz cm], [0.5 0.25 3*10^(-6) 10^(-7) 9.81 0.25 5*10^(-3) 5*10^(-3) 10^(-2) 10^(4)])); 
+A = double(subs(Js_a, [m L k b g kd Ixx Iyy Izz cm ], ...
+    [0.5 0.25 3*10^(-6) 10^(-7) 9.81 0.25 5*10^(-3) 5*10^(-3) 10^(-2) 10^(4) ])); 
+B = double(subs(Js_b, [m L k b g kd Ixx Iyy Izz cm], ...
+    [0.5 0.25 3*10^(-6) 10^(-7) 9.81 0.25 5*10^(-3) 5*10^(-3) 10^(-2) 10^(4)])); 
 C1 = [eye(3), zeros(3), zeros(3), zeros(3); zeros(3), zeros(3), eye(3), zeros(3)];
 C = eye(12);
 D = zeros(12,4);
@@ -101,31 +118,42 @@ D = zeros(12,4);
 
 System = ss(A,B,C,D);
 
+vstar = double(subs(g*m/(4*k*cm), [g m k cm], [9.81 0.5 3e-6 1e4]));
+ystar = 0;
+
+fprintf("The poles of the linearized system:\n")
+pole(System)
 %%%%%%%%%%%%%%%%%%%%%%%%
-%DIscriti
+%% Discretization
 %%%%%%%%%%%%%%%%%%%%%%%%
 Ts = 0.05;
+
+fprintf("Zero hold discretization\n")
 Zero_hold = c2d(System,Ts);
+fprintf("The poles:\n")
 pole(Zero_hold)
-rank(ctrb(Zero_hold))
-rank(obsv(Zero_hold))
+fprintf("The rank of the controlability matrix: %d\n", rank(ctrb(Zero_hold)))
+fprintf("The rank of the observability matrix: %d\n", rank(obsv(Zero_hold)))
 
-
+fprintf("Bilinear discretization\n")
 Tustin = c2d(System,Ts, 'tustin');
+fprintf("The poles:\n")
 pole(Tustin)
-rank(ctrb(Tustin))
-rank(obsv(Tustin))
+fprintf("The rank of the controlability matrix: %d\n", rank(ctrb(Tustin)))
+fprintf("The rank of the observability matrix: %d\n", rank(obsv(Tustin)))
 
+fprintf("Forward Euler discretization\n")
 euler = c2d(System,Ts, 'forward');
+fprintf("The poles:\n")
 pole(euler)
-rank(ctrb(euler))
-rank(obsv(euler))
+fprintf("The rank of the controlability matrix: %d\n", rank(ctrb(euler)))
+fprintf("The rank of the observability matrix: %d\n", rank(obsv(euler)))
 
 
 [a,b,c,d] = ssdata(Tustin); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-%control
+%% LQG control
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 Q = eye(12);
