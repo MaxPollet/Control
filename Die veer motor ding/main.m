@@ -50,5 +50,11 @@ Q_c = [350, 0, 0, 0;
 R_c = 10;
 
 
-TF = tf(A,B,C,D);
+
+%TF = ss(A,B,C,D);
+
+
+
+[K,S,P] = lqr(System,Q_c,R_c);
+
 
