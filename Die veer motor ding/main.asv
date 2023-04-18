@@ -41,8 +41,7 @@ fprintf("The system has no transmission zeros")
 fprintf("The rank of the controllability matrix is: %d\n", rank(ctrb(A,B)));
 fprintf("The rank of the observability matrix is: %d\n", rank(obsv(A,C)));
 %% Controller
-C_c = eye(4);
-D_c = zeros(4,1);
+
 Q_c = [350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
@@ -52,6 +51,4 @@ R_c = 10;
 
 [K,S,P] = lqr(System,Q_c,R_c);
 
-x_d = [1 0 0 0];
-fprintf("The closed-loop eigenvalues are:")
-display(P)
+
