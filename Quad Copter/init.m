@@ -158,91 +158,41 @@ fprintf("The rank of the observability matrix: %d\n", rank(obsv(euler)))
 
 
 
-Q = eye(12)*0.001;
-Q(1,1) = 10;
-Q(2,2) = 10;
-Q(3,3) = 1000000;
-R = eye(4);
-
-[K,S,P] = lqr(Tustin,Q,R);
-
-
 m = 4;
 n = 12;
 
-%%%%%%%%%%%%%%
-%INPUT < OUTPUT;
-%%%%%%%%%%%%%%%
-L = [A - eye(12), B];
-O = [C1,D1];
-I =  [L; O];
 
+% %%%%%%%%%%%%%%
+% %INPUT > OUTPUT;
+% %%%%%%%%%%%%%%%
 
-Z = [zeros(6,12); eye(12)];
-
-N = I\Z;
-%N= pinv(I)*Z;
-
-Nx = N(1:n,:);
-Nu = N(end-(m-1):end,:);
-
-
-
-%%%%%%%%%%%%%%
-%INPUT > OUTPUT;
-%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%
-
-Q = eye(12)*1;
-Q(1,1) = 10;
-Q(2,2) = 10;
+Q = eye(12)*10;
+Q(1,1) = 50;
+Q(2,2) = 50;
 Q(3,3) = 400;
-
-%Q(12,12) = 1000;
 
 R = eye(4)*0.005;
 
-[K,S,P] = lqr(Tustin,Q,R);
+[K,S,P] = dlqr(a,b,Q,R);
 
 
 
-
-C2 = C1(1:3,:);
-D2 = D1(1:3,:);
-
-L = [A - eye(n), B];
-O = [C2,D2];
+L = [a - eye(12), b];
+O = [c,d];
 I =  [L; O];
 
 
-Z = [zeros(n,3); eye(3)];
+Z = [zeros(n,12); eye(12)];
 
 N = I\Z;
-%N= pinv(I)*Z;
+
 
 Nx = N(1:n,:);
 Nu = N(end-(m-1):end,:);
 
 
 
-%%%%%%%%%%%%%%%%
-%% Contiunues
-%%%%%%%%%%%%%%%%
 
-
-
-
-L = [A, B];
-O = [C2,D2];
-I =  [L; O];
-
-
-N = I\Z;
-
-
-Nx_c = N(1:n,:);
-Nu_c = N(end-(m-1):end,:);
 
 
 
