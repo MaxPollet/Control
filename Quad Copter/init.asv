@@ -136,7 +136,6 @@ pole(System)
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Discretization
 %%%%%%%%%%%%%%%%%%%%%%%%
-fprintf("\n Beginning the discretization ...\n")
 Ts = 0.05;
 
 fprintf("Zero hold discretization\n")
@@ -167,7 +166,7 @@ fprintf("The rank of the observability matrix: %d\n", rank(obsv(euler)))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LQR control with full state feedback
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fprintf("Computing the gain for the LQR controller with full state feedback...\n")
+fprintf("Computing the gain for the LQR controller with full state feedback\n")
 m = 4;
 n = 12;
 
@@ -205,7 +204,7 @@ Nu = N(end-(m-1):end,:);
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % LQR with integral action
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-fprintf("Computing the gain for the LQR controller with integral control action...\n")
+fprintf("Computing the gain for the LQR controller with integral control action\n")
 C_c = eye(3,12);
 D_c = zeros(3,4);
 
@@ -222,11 +221,11 @@ fprintf("Rank of the controllability matrix of the augmented system: %d\n", ...
         rank(ctrb(NA, NB)))
 
 Q_int = eye(15);
-Q_int(4,4) = 50;
-Q_int(5,5) = 50;
-Q_int(6,6) = 350;
+Q_int(13,13) = 100;
+Q_int(14,14) = 100;
+Q_int(15,15) = 500;
 
-R_int = eye(4)*0.0005;
+R_int = eye(4)*0.001;
 
 full_K = dlqr(NA, NB, Q_int, R_int);
 
