@@ -226,6 +226,10 @@ Q_int(4,4) = 50;
 Q_int(5,5) = 50;
 Q_int(6,6) = 350;
 
+% Q_int(1,1) = 100;
+% Q_int(2,2) = 100;
+% Q_int(3,3) = 350;
+
 R_int = eye(4)*0.0005;
 
 full_K = dlqr(NA, NB, Q_int, R_int);
