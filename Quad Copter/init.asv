@@ -6,8 +6,8 @@ load("references_07.mat")
 %%%%%%%%%%%%%%%%
 % initialization
 %%%%%%%%%%%%%%%%
-disp("------------------------------------------------")
-disp("Linearizing the system...")
+disp("------------------------")
+disp("Linearizing the s")
 % states
 syms x y z vx vy vz phi theta psi wx wy wz ;
 
@@ -143,8 +143,7 @@ clear J_a J_b Js_a Js_b
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Discretization
 %%%%%%%%%%%%%%%%%%%%%%%%
-disp("------------------------------------------------")
-fprintf("Beginning the discretization ...\n")
+fprintf("\n Beginning the discretization ...\n")
 Ts = 0.05;
 
 fprintf("Zero hold discretization\n")
@@ -175,7 +174,6 @@ clear euler Zero_hold
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LQR control with full state feedback
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-disp("------------------------------------------------")
 fprintf("Computing the gain for the LQR controller with full state feedback...\n")
 m = 4;
 n = 12;
@@ -209,7 +207,6 @@ disp(K_fsf)
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % LQR with integral action
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-disp("------------------------------------------------")
 fprintf("Computing the gain for the LQR controller with integral control action...\n")
 
 C_int = C_d(1:3,:);
