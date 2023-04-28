@@ -250,7 +250,7 @@ generate_report(0)
 % state feedback via Pole placement
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp("------------------------------------------------")
-disp("Pole placement with state feedback control and state estimation")
+disp("Pole placement with state feedback control ")
 % Since there are 12 states do we need 12 poles, where 2 are dominant and
 % 10 are non-dominant
 
@@ -274,13 +274,3 @@ K_pp = place(A_d, B_d, cl_poles_disc);
 
 % Now we make the estimator gain L
 % First check if the system is observable
-disp("The rank of the observability matrix:")
-disp(rank(obsv(A_d, C_d)))
-
-% The poles of the estimator should be 2-5 times bigger than the closed
-% loop poles of the controller
-cl_poles_est_cont = cl_poles_cont*3;
-
-cl_poles_est_disc = exp(cl_poles_est_cont*Ts);
-
-L_pp = place(A_d', C_d', cl_poles_est_disc)';
