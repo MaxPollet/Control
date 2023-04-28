@@ -204,6 +204,8 @@ R = eye(4)*0.005;
 [K_fsf,S,P] = dlqr(A_d,B_d,Q,R);
 disp("The gain of full state feedback with LQR")
 disp(K_fsf)
+sim("LQR_full_state_feedback.slx")
+generate_report(0)
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -240,5 +242,11 @@ disp("K_i:")
 disp(Ki)
 disp("K_s:")
 disp(Ks)
+sim("LQR_integral_control_2021.slx")
+generate_report(0)
 
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% state feedback via Pole placement
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
