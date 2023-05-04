@@ -31,6 +31,7 @@ C = [1 0 0 0;
 D = zeros(2,1);
 
 System = ss(A, B, C, D);
+TF = tf(System);
 fprintf("The eigenvalues of the matrix A:")
 eig(A)
 fprintf("The poles of the system are:")
@@ -45,11 +46,11 @@ fprintf("The rank of the observability matrix is: %d\n", rank(obsv(A,C)));
 Q = {[350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
-       0,   0,    0, 0.5];
+       0,   0,    0, 0.5]; % initiele controller
        [400, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
-       0,   0,    0, 0.5];
+       0,   0,    0, 0.5]; % dit lijkt me de optimale
        [350, 0,    0, 0; 
        0,   1000, 0, 0; 
        0,   0,    3, 0;
@@ -57,26 +58,26 @@ Q = {[350, 0,    0, 0;
        [350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    50, 0;
-       0,   0,    0, 0.5];
-       [350, 0,    0, 0; 
+       0,   0,    0, 0.5]; % voorbeeld van te trage controller
+       [500, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
-       0,   0,    0, 0.5];
+       0,   0,    0, 0.5]; % voorbeeld van te nerveuze controller
        [350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
        0,   0,    0, 0.5]};
 
-R = {10 10 10 10 5 15};
+R = {10 10 10 10 0.05 15};
 
 for i=1:length(Q)
     Q_c = Q{i};
     R_c = R{i};
     
-    [K, S, P] = lqr(System, Q_c, R_c);
+    [K, ~, P] = lqr(System, Q_c, R_c);
     
     out = sim("controller_check_2021.slx");
-
+    
     figure
     subplot(2, 1, 1)
     plot(out.tout, out.theta.Data, 'Color', "#0072BD")
@@ -103,25 +104,44 @@ for i=1:length(Q)
     grid on
     xlabel("$$t [s]$$", 'Interpreter','latex')
     ylabel("$$\dot\alpha \left[\frac{1}{s}\right]$$", 'Interpreter', 'latex')
-    
+
     figure
     plot(out.tout, out.control_actions.Data, 'Color', "#0072BD")
     grid on
     xlabel("$$t [s]$$", 'Interpreter','latex')
     ylabel("$$V [Volt]$$", 'Interpreter', 'latex')
 
-    close_sys = tf(ss((A-B*K), zeros(4,1), (C-D*K), zeros(2,1)));
     % werkt niet voor een reden
 %     bode(close_sys)
 
     disp("-------------------------")
     disp(i)
     disp("The closed loop eigevalues: ")
-    disp(eig(A-B*K))
+    disp(P)
     
 end
 
-% [K,S,P] = lqr(System,Q_c,R_c);
+Q_c = Q{2};
+R_c = R{2};
+
+[K,S,P] = lqr(System,Q_c,R_c);
 
 fprintf("The closed-loop eigenvalues are:")
 display(P)
+
+controller = tf(ss(A-B*K, zeros(4,1), C, zeros(4,1)));
+% 
+% figure
+% bode(controller)
+
+%%
+%%%%%%%%%%%%%%%%
+% Implementation
+%%%%%%%%%%%%%%%%
+
+w_c = 2*2*pi;
+Ts = 1/200;
+
+filter = tf([w_c*Ts], [1+w_c*Ts, -1]);
+
+
