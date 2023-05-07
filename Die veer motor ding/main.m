@@ -142,6 +142,6 @@ controller = tf(ss(A-B*K, zeros(4,1), C, zeros(4,1)));
 w_c = 2*2*pi;
 Ts = 1/200;
 
-filter = tf([w_c*Ts], [1+w_c*Ts, -1]);
+filter = tf([w_c*Ts,0], [1+w_c*Ts, -1]);
 
 
