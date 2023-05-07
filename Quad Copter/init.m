@@ -204,8 +204,8 @@ R = eye(4)*0.1;
 [K_fsf,S,P] = dlqr(A_d,B_d,Q,R);
 disp("The gain of full state feedback with LQR")
 disp(K_fsf)
-sim("LQR_full_state_feedback.slx")
-generate_report(0)
+%sim("LQR_full_state_feedback.slx")
+%generate_report(0)
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -287,3 +287,5 @@ L_pp = place(A_d', C_d', cl_poles_est_disc)';
 
 % sim("Pole_placement_estimator.slx")
 % generate_report(1)
+
+
