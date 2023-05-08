@@ -257,15 +257,15 @@ disp("Pole placement with state feedback control and state estimation")
 % We want the settling time to be smaller than 7 seconds
 % ts -> 2s
 % damping ratio is trial and error
-ts = 1;
-dr = 0.4;
+ts = 3;
+dr = 0.5;
 
 wn = 4.6/(dr*ts);
 alpha = -dr*wn;
 beta = wn*sqrt(1-dr^2);
 
-cl_poles_cont = [alpha + beta*1i, alpha - beta*1i, ones(1, 4)*alpha*5,... 
-                ones(1, 4)*alpha*8, ones(1, 2)*alpha*10]';
+cl_poles_cont = [alpha - beta*1i, alpha + beta*1i, ones(1, 4)*alpha*6,... 
+                ones(1, 4)*alpha*9, ones(1, 2)*alpha*7]';
 
 cl_poles_disc = exp(cl_poles_cont.*Ts);
 
@@ -279,7 +279,7 @@ disp(rank(obsv(A_d, C_d)))
 
 % The poles of the estimator should be 2-5 times bigger than the closed
 % loop poles of the controller
-cl_poles_est_cont = cl_poles_cont*4;
+cl_poles_est_cont = cl_poles_cont*5;
 
 cl_poles_est_disc = exp(cl_poles_est_cont*Ts);
 
@@ -289,11 +289,12 @@ L_pp = place(A_d', C_d', cl_poles_est_disc)';
 % generate_report(1)
 
 
-
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LQG
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+disp("------------------------------------------------")
+disp("LQG with integral control")
 
 
 noise_sys = ss(A_d,[B_d,eye(12)], C_d, [D_d,zeros(6,12)]);
