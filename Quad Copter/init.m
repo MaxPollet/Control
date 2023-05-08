@@ -289,3 +289,30 @@ L_pp = place(A_d', C_d', cl_poles_est_disc)';
 % generate_report(1)
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LQG
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+noise_sys = ss(A_d,[B_d,eye(12)], C_d, [D_d,zeros(6,12)]);
+A_n = A_d;
+B_n = [B_d,eye(12)];
+C_n = C_d;
+D_n = [D_d,zeros(6,12)];
+
+Q_noise = zeros(12);
+
+Q_noise(1,1) = 2.5*10^(-5);
+Q_noise(2,2) = 2.5*10^(-5);
+Q_noise(3,3) = 2.5*10^(-5);
+Q_noise(4,4) = 7.57*10^(-5);
+Q_noise(5,5) = 7.57*10^(-5);
+Q_noise(6,6) = 7.57*10^(-5);
+
+
+R_noise = eye(6); % dacht dat die een nul matrix zijn 
+
+[KEST,L_kalman,P] = kalman(noise_sys,Q_noise,R_noise);
+
