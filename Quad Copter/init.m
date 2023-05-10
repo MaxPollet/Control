@@ -303,17 +303,19 @@ B_n = [B_d,eye(12)];
 C_n = C_d;
 D_n = [D_d,zeros(6,12)];
 
-Q_noise = zeros(12);
+Q_noise = eye(12)*(10^(-16));
 
-Q_noise(1,1) = 2.5*10^(-5);
-Q_noise(2,2) = 2.5*10^(-5);
-Q_noise(3,3) = 2.5*10^(-5);
-Q_noise(4,4) = 7.57*10^(-5);
-Q_noise(5,5) = 7.57*10^(-5);
-Q_noise(6,6) = 7.57*10^(-5);
+R_noise = eye(6);
+
+R_noise(1,1) = 2.5*10^(-5);
+R_noise(2,2) = 2.5*10^(-5);
+R_noise(3,3) = 2.5*10^(-5);
+R_noise(4,4) = 7.57*10^(-5);
+R_noise(5,5) = 7.57*10^(-5);
+R_noise(6,6) = 7.57*10^(-5);
+
+[KEST,L_kalman,P] = kalman(Tustin,Q_noise,R_noise);
 
 
-R_noise = eye(6); % dacht dat die een nul matrix zijn 
 
-[KEST,L_kalman,P] = kalman(noise_sys,Q_noise,R_noise);
 
