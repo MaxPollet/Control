@@ -308,9 +308,9 @@ B_n = [B_d,eye(12)];
 C_n = C_d;
 D_n = [D_d,zeros(6,12)];
 
-Q_noise = eye(4)*(10^(-16));
+Q_noise = eye(4)*(10^(-16*0));
 
-R_noise = eye(6);
+R_noise = zeros(6);
 
 R_noise(1,1) = 2.5*10^(-5);
 R_noise(2,2) = 2.5*10^(-5);
