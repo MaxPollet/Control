@@ -36,11 +36,13 @@ fprintf("The eigenvalues of the matrix A:")
 eig(A)
 fprintf("The poles of the system are:")
 pole(System)
-fprintf("The system is minimal\n")
-Z = tzero(A, B, C, D);
-fprintf("The system has no transmission zeros")
+disp("transmission zeros of the system")
+disp(tzero(A, B, C, D))
 fprintf("The rank of the controllability matrix is: %d\n", rank(ctrb(A,B)));
 fprintf("The rank of the observability matrix is: %d\n", rank(obsv(A,C)));
+
+figure
+pzmap(System)
 %% Controller
 
 Q = {[350, 0,    0, 0; 
