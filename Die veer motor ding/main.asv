@@ -36,11 +36,13 @@ fprintf("The eigenvalues of the matrix A:")
 eig(A)
 fprintf("The poles of the system are:")
 pole(System)
-fprintf("The system is minimal\n")
-Z = tzero(A, B, C, D);
-fprintf("The system has no transmission zeros")
+disp("transmission zeros of the system")
+disp(tzero(A, B, C, D))
 fprintf("The rank of the controllability matrix is: %d\n", rank(ctrb(A,B)));
 fprintf("The rank of the observability matrix is: %d\n", rank(obsv(A,C)));
+
+figure
+pzmap(System)
 %% Controller
 
 Q = {[350, 0,    0, 0; 
@@ -76,48 +78,46 @@ for i=1:length(Q)
     
     [K, ~, P] = lqr(System, Q_c, R_c);
     
-    %out = sim("controller_check_2021.slx");
+    out = sim("controller_check_2021.slx");
     
-%     figure
-%     subplot(2, 1, 1)
-%     plot(out.tout, out.theta.Data, 'Color', "#0072BD")
-%     hold on
-%     plot(out.tout, out.theta_ref.Data, 'Color', "#D95319")
-%     grid on
-%     xlabel("$$t [s]$$", 'Interpreter','latex')
-%     ylabel("$$\theta [rad]$$", 'Interpreter', 'latex')
-%     legend('\theta', '\theta_{ref}')
-%     subplot(2,1,2)
-%     plot(out.tout, out.alpha.Data, 'Color', "#0072BD")
-%     grid on
-%     xlabel("$$t [s]$$", 'Interpreter','latex')
-%     ylabel("$$\alpha [rad]$$", 'Interpreter', 'latex')
-% 
-%     figure
-%     subplot(2, 1, 1)
-%     plot(out.tout, out.theta_dot.Data, 'Color', "#0072BD")
-%     grid on
-%     xlabel("$$t [s]$$", 'Interpreter','latex')
-%     ylabel("$$\dot\theta \left[\frac{1}{s}\right]$$", 'Interpreter', 'latex')
-%     subplot(2,1,2)
-%     plot(out.tout, out.alpha_dot.Data, 'Color', "#0072BD")
-%     grid on
-%     xlabel("$$t [s]$$", 'Interpreter','latex')
-%     ylabel("$$\dot\alpha \left[\frac{1}{s}\right]$$", 'Interpreter', 'latex')
-% 
-%     figure
-%     plot(out.tout, out.control_actions.Data, 'Color', "#0072BD")
-%     grid on
-%     xlabel("$$t [s]$$", 'Interpreter','latex')
-%     ylabel("$$V [Volt]$$", 'Interpreter', 'latex')
-% 
-%     % werkt niet voor een reden
-% %     bode(close_sys)
-% 
-%     disp("-------------------------")
-%     disp(i)
-%     disp("The closed loop eigevalues: ")
-%     disp(P)
+    figure
+    subplot(2, 1, 1)
+    plot(out.tout, out.theta.Data, 'Color', "#0072BD")
+    hold on
+    plot(out.tout, out.theta_ref.Data, 'Color', "#D95319")
+    grid on
+    xlabel("$$t [s]$$", 'Interpreter','latex')
+    ylabel("$$\theta [rad]$$", 'Interpreter', 'latex')
+    legend('\theta', '\theta_{ref}')
+    subplot(2,1,2)
+    plot(out.tout, out.alpha.Data, 'Color', "#0072BD")
+    grid on
+    xlabel("$$t [s]$$", 'Interpreter','latex')
+    ylabel("$$\alpha [rad]$$", 'Interpreter', 'latex')
+
+    figure
+    subplot(2, 1, 1)
+    plot(out.tout, out.theta_dot.Data, 'Color', "#0072BD")
+    grid on
+    xlabel("$$t [s]$$", 'Interpreter','latex')
+    ylabel("$$\dot\theta \left[\frac{1}{s}\right]$$", 'Interpreter', 'latex')
+    subplot(2,1,2)
+    plot(out.tout, out.alpha_dot.Data, 'Color', "#0072BD")
+    grid on
+    xlabel("$$t [s]$$", 'Interpreter','latex')
+    ylabel("$$\dot\alpha \left[\frac{1}{s}\right]$$", 'Interpreter', 'latex')
+
+    figure
+    plot(out.tout, out.control_actions.Data, 'Color', "#0072BD")
+    grid on
+    xlabel("$$t [s]$$", 'Interpreter','latex')
+    ylabel("$$V [Volt]$$", 'Interpreter', 'latex')
+
+
+    disp("-------------------------")
+    disp(i)
+    disp("The closed loop eigevalues: ")
+    disp(P)
     
 end
 
@@ -129,10 +129,7 @@ R_c = R{2};
 fprintf("The closed-loop eigenvalues are:")
 display(P)
 
-controller = tf(ss(A-B*K, zeros(4,1), C, zeros(2,1)));
-% 
-% figure
-% bode(controller)
+
 
 %%
 %%%%%%%%%%%%%%%%
