@@ -131,7 +131,7 @@ display(P)
 
 out = sim("controller_frequency_check_2021.slx");
 
-freq;
+%freq;
 
 figure
 subplot(2,1,1)
