@@ -48,29 +48,21 @@ pzmap(System)
 Q = {[350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
-       0,   0,    0, 0.5]; % initiele controller
+       0,   0,    0, 0.5]; 
        [400, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
-       0,   0,    0, 0.5]; % dit lijkt me de optimale
-       [350, 0,    0, 0; 
-       0,   1000, 0, 0; 
-       0,   0,    3, 0;
-       0,   0,    0, 0.5];
+       0,   0,    0, 0.5]; 
        [350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    50, 0;
-       0,   0,    0, 0.5]; % voorbeeld van te trage controller
+       0,   0,    0, 0.5]; 
        [500, 0,    0, 0; 
-       0,   1500, 0, 0; 
-       0,   0,    3, 0;
-       0,   0,    0, 0.5]; % voorbeeld van te nerveuze controller
-       [350, 0,    0, 0; 
        0,   1500, 0, 0; 
        0,   0,    3, 0;
        0,   0,    0, 0.5]};
 
-R = {10 10 10 10 0.05 15};
+R = {10 10 10 0.05};
 
 for i=1:length(Q)
     Q_c = Q{i};
@@ -129,14 +121,22 @@ R_c = R{2};
 fprintf("The closed-loop eigenvalues are:")
 display(P)
 
-out = sim("controller_frequency_check_2021.slx");
+out = sim("controller_frequency_check.slx");
 
 %freq;
-
 figure
 subplot(2,1,1)
+plot(out.tout, out.theta_ref.Data,  'Color', "#D95319")
+hold on
+plot(out.tout, out.theta.Data, 'Color', "#0072BD")
+xlabel("$$t [s]$$", 'Interpreter','latex')
+ylabel("$$\theta[rad]$$", 'Interpreter','latex')
+legend("\theta_{ref}","\theta")
 
-
+subplot(2,1,2)
+plot(out.tout, out.alpha.Data, "Color", "#0072BD")
+xlabel("$$t [s]$$", 'Interpreter','latex')
+ylabel("$$\alpha[rad]$$", 'Interpreter','latex')
 %%
 %%%%%%%%%%%%%%%%
 % Implementation
