@@ -302,17 +302,17 @@ B_n = [B_d,eye(12)];
 C_n = C_d;
 D_n = [D_d,zeros(6,12)];
 
-Q_noise = zeros(12);
-% [200*eye(3), zeros(3), zeros(3), zeros(3);
-%            zeros(3), 1e-5*eye(3), zeros(3), zeros(3);
-%            zeros(3), zeros(3), 1e-15*eye(3), zeros(3);
-%            zeros(3), zeros(3), zeros(3),1e-5*eye(3)];
+Q_noise = [1e-4*eye(3), zeros(3), zeros(3), zeros(3);
+           zeros(3), 1e-5*eye(3), zeros(3), zeros(3);
+           zeros(3), zeros(3), 1e-5*eye(3), zeros(3);
+           zeros(3), zeros(3), zeros(3), 1e-5*eye(3)];
 
 R_noise = [2.5e-5*eye(3),  zeros(3);
            zeros(3), 7.57e-5*eye(3)];
 
+
 [KEST,L_kalman,P] = kalman(noise_sys,Q_noise,R_noise);
 
-pzmap(KEST)
+
 
 
