@@ -205,6 +205,18 @@ R = eye(4)*0.1;
 disp("The gain of full state feedback with LQR")
 disp(K_fsf)
 
+%%%%%%%%%%%
+% with load
+%%%%%%%%%%%
+
+Q = eye(12)*10;
+Q(1,1) = 50;
+Q(2,2) = 50;
+Q(3,3) = 1000;
+
+R = eye(4)*0.01;
+
+[K_fsf_l,S,P] = dlqr(A_d,B_d,Q,R);
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
