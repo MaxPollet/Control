@@ -180,9 +180,9 @@ fprintf("Computing the gain for the LQR controller with full state feedback...\n
 m = 4;
 n = 12;
 
-%%%%%%%%%%%%%%%%
-% INPUT > OUTPUT
-%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%
+% without load
+%%%%%%%%%%%%%%
 
 I =  [A_d - eye(12), B_d; 
       C_d,           D_d];
@@ -301,30 +301,37 @@ L_pp = place(A_d', C_d', cl_poles_est_disc)';
 
 
 %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% LQG
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LQG with integral control
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp("------------------------------------------------")
 disp("LQG with integral control")
 
 
-noise_sys = ss(A_d,[B_d,eye(12)], C_d, [D_d,zeros(6,12)]);
+noise_sys = ss(A_d,[B_d, eye(12)], C_d, [D_d,zeros(6,12)]);
 A_n = A_d;
 B_n = [B_d,eye(12)];
 C_n = C_d;
 D_n = [D_d,zeros(6,12)];
 
-Q_noise = zeros(12);
-% [200*eye(3), zeros(3), zeros(3), zeros(3);
-%            zeros(3), 1e-5*eye(3), zeros(3), zeros(3);
-%            zeros(3), zeros(3), 1e-15*eye(3), zeros(3);
-%            zeros(3), zeros(3), zeros(3),1e-5*eye(3)];
+Q_noise = eye(12);
+Q_noise(1,1) = 1.5e-3;
+Q_noise(2,2) = 1.5e-3;
+Q_noise(3,3) = 0.005;
+Q_noise(4,4) = 4e-3;
+Q_noise(5,5) = 2e-3;
+Q_noise(6,6) = 6e-3;
+Q_noise(7,7) = 1.5e-3;
+Q_noise(8,8) = 2e-3;
+Q_noise(9,9) = 5e-7;
+Q_noise(10,10) = 0.008;
+Q_noise(11,11) = 0.008;
+Q_noise(12,12) = 2e-7;
 
 R_noise = [2.5e-5*eye(3),  zeros(3);
            zeros(3), 7.57e-5*eye(3)];
 
 [KEST,L_kalman,P] = kalman(noise_sys,Q_noise,R_noise);
 
-pzmap(KEST)
 
 
