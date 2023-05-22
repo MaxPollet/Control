@@ -121,28 +121,12 @@ R_c = R{2};
 fprintf("The closed-loop eigenvalues are:")
 display(P)
 
-out = sim("controller_frequency_check.slx");
-
-%freq;
-figure
-subplot(2,1,1)
-plot(out.tout, out.theta_ref.Data,  'Color', "#D95319")
-hold on
-plot(out.tout, out.theta.Data, 'Color', "#0072BD")
-xlabel("$$t [s]$$", 'Interpreter','latex')
-ylabel("$$\theta[rad]$$", 'Interpreter','latex')
-legend("\theta_{ref}","\theta")
-
-subplot(2,1,2)
-plot(out.tout, out.alpha.Data, "Color", "#0072BD")
-xlabel("$$t [s]$$", 'Interpreter','latex')
-ylabel("$$\alpha[rad]$$", 'Interpreter','latex')
 %%
 %%%%%%%%%%%%%%%%
 % Implementation
 %%%%%%%%%%%%%%%%
 
-w_c = 2*2*pi;
+w_c = 0.5*2*pi;
 Ts = 1/200;
 
 filter = tf([w_c*Ts,0], [1+w_c*Ts, -1]);
