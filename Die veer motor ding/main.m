@@ -126,7 +126,7 @@ display(P)
 % Implementation
 %%%%%%%%%%%%%%%%
 
-w_c = 0.5*2*pi;
+w_c = 2*2*pi;
 Ts = 1/200;
 
 filter = tf([w_c*Ts,0], [1+w_c*Ts, -1]);
