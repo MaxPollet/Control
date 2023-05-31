@@ -133,8 +133,11 @@ System = ss(A_c,B_c,C_c,D_c);
 vstar = double(subs(g*m/(4*k*cm), [g m k cm], [9.81 0.5 3e-6 1e4]));
 ystar = 0;
 
-fprintf("The poles of the linearized system:\n")
+disp("The poles of the linearized system:")
 disp(pole(System))
+
+figure
+pzmap(System)
 
 clear x y z vx vy vz phi theta psi wx wy wz v21 v21_0 v22 v22_0 v23 v23_0 v24 v24_0 m L k B_d g kd Ixx Iyy Izz cm;
 clear f1 f10 f10_a f10_b f11 f11_a f11_b f12 f12_a f12_b f2 f3 f4 f4_a f4_b f5 f5_a f5_b f6 f6_a f6_b f7 f8 f9;
@@ -147,27 +150,35 @@ disp("------------------------------------------------")
 fprintf("Beginning the discretization ...\n")
 Ts = 0.05;
 
-fprintf("Zero hold discretization\n")
+disp("Zero hold discretization")
 Zero_hold = c2d(System,Ts);
-fprintf("The poles:\n")
+disp("The poles:")
 disp(pole(Zero_hold))
+disp("The transmission zeros:")
+disp(tzero(Zero_hold))
 fprintf("The rank of the controlability matrix: %d\n", rank(ctrb(Zero_hold)))
-fprintf("The rank of the observability matrix: %d\n", rank(obsv(Zero_hold)))
+fprintf("The rank of the observability matrix: %d\n\n", rank(obsv(Zero_hold)))
 
-fprintf("Bilinear discretization\n")
+disp("Bilinear discretization")
 Tustin = c2d(System,Ts, 'tustin');
-fprintf("The poles:\n")
+disp("The poles:")
 disp(pole(Tustin))
+disp("The transmission zeros:")
+disp(tzero(Tustin))
 fprintf("The rank of the controlability matrix: %d\n", rank(ctrb(Tustin)))
-fprintf("The rank of the observability matrix: %d\n", rank(obsv(Tustin)))
+fprintf("The rank of the observability matrix: %d\n\n", rank(obsv(Tustin)))
 
-fprintf("Forward Euler discretization\n")
+disp("Forward Euler discretization")
 euler = c2d(System,Ts, 'forward');
-fprintf("The poles:\n")
+disp("The poles:")
 disp(pole(euler))
+disp("The transmission zeros:")
+disp(tzero(euler))
 fprintf("The rank of the controlability matrix: %d\n", rank(ctrb(euler)))
-fprintf("The rank of the observability matrix: %d\n", rank(obsv(euler)))
+fprintf("The rank of the observability matrix: %d\n\n", rank(obsv(euler)))
 
+figure
+pzmap(Tustin)
 
 [A_d,B_d,C_d,D_d] = ssdata(Tustin); 
 clear euler Zero_hold
@@ -243,7 +254,7 @@ Q_int(6,6) = 350;
 
 R_int = eye(4)*0.001;
 
-full_K = dlqr(NA, NB, Q_int, R_int);
+[full_K, ~, P] = dlqr(NA, NB, Q_int, R_int);
 
 Ki = full_K(:, 1:3);
 Ks = full_K(:, 4:end);
@@ -323,7 +334,7 @@ Q_noise = diag([1.5e-8, 1.5e-8, 1.5e-8, 6.5e-6, 6.5e-6, 6.5e-6, 6.5e-9, 6.5e-9, 
 R_noise = [2.5e-5*eye(3),  zeros(3);
            zeros(3), 7.57e-5*eye(3)];
 
-[K_est] = dlqr(A_d', C_d', B1*Q_noise*B1', R_noise');
+[K_est, S, P1] = dlqr(A_d', C_d', B1*Q_noise*B1', R_noise');
 L_k = K_est';
 
 [KEST,L_kalman,P] = kalman(noise_sys,Q_noise,R_noise);
