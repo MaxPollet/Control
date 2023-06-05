@@ -38,8 +38,10 @@ fprintf("The poles of the system are:")
 pole(System)
 disp("transmission zeros of the system")
 disp(tzero(A, B, C, D))
-fprintf("The rank of the controllability matrix is: %d\n", rank(ctrb(A,B)));
-fprintf("The rank of the observability matrix is: %d\n", rank(obsv(A,C)));
+Co = ctrb(A,B);
+Ob = obsv(A,C);
+fprintf("The rank of the controllability matrix is: %d\n", rank(Co));
+fprintf("The rank of the observability matrix is: %d\n", rank(Ob));
 
 figure
 pzmap(System)
